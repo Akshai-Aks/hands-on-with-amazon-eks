@@ -2,11 +2,21 @@ echo "---------- INSTALLING NANO ----------"
 sudo yum install nano -y
 
 echo "---------- INSTALLING EKSCTL ----------"
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/v0.147.0/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv /tmp/eksctl /usr/local/bin
+# eksctl moved from the weaveworks org to eksctl-io. AWS recommends installing
+# the latest release directly from GitHub. See:
+# https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
+
+# (optional) verify the checksum before extracting
+curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+
+tar -xzf eksctl_${PLATFORM}.tar.gz -C /tmp && rm eksctl_${PLATFORM}.tar.gz
+sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
 eksctl version
 
 
 echo "---------- INSTALLING HELM ----------"
-export VERIFY_CHECKSUM=false
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
