@@ -7,7 +7,7 @@ Parameters:
   BuildSpecLocation:
     Description: The location of the buildspec file inside the repository
     Type: String
-    Default: infra/codebuild/buildspec.yml
+    Default: inventory-api/infra/codebuild/buildspec.yml
   CICDBranch:
     Description: The branch that will be used for the CICD process
     Type: String
